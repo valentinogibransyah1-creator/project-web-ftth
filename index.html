@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FTTH Network Planner & Cost Estimator</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-950 text-slate-100 font-['Inter'] antialiased selection:bg-cyan-500 selection:text-slate-950 min-h-screen overflow-x-hidden">
+
+    <nav class="sticky top-0 z-50 backdrop-blur-md bg-slate-950/80 border-b border-cyan-500/30 px-4 py-3 shadow-[0_4px_20px_rgba(6,182,212,0.15)] flex justify-between items-center transition-all duration-300">
+        <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-full border-2 border-cyan-400 bg-slate-900 flex items-center justify-center overflow-hidden p-0.5 shadow-[0_0_10px_rgba(34,211,238,0.5)]">
+                <svg viewBox="0 0 100 100" class="w-full h-full text-cyan-400 fill-current">
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="3"/>
+                    <path d="M30 40 L50 20 L70 40 L50 60 Z" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <path d="M30 60 L50 40 L70 60 L50 80 Z" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <text x="50" y="93" font-size="8" font-weight="bold" text-anchor="middle" font-family="Orbitron">BPVP</text>
+                </svg>
+            </div>
+            <span class="font-['Orbitron'] font-bold text-lg md:text-xl tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
+                BPVP SORONG
+            </span>
+        </div>
+        <div class="hidden lg:block text-right">
+            <h1 class="font-['Orbitron'] text-sm font-semibold tracking-widest text-cyan-300">SYSTEM KALKULASI PERENCANAAN INSTALASI FIBER OPTIK</h1>
+        </div>
+        <div>
+            <button class="px-5 py-1.5 border border-blue-500 rounded-md font-['Orbitron'] text-xs font-bold text-blue-400 bg-blue-950/30 tracking-widest shadow-[0_0_15px_rgba(59,130,246,0.4)] cursor-default select-none">
+                ADMIN
+            </button>
+        </div>
+    </nav>
+
+    <header class="relative max-w-7xl mx-auto px-4 py-16 md:py-24 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div class="relative flex justify-center items-center group">
+            <div id="hero-image-container" class="relative w-72 h-96 md:w-80 md:h-[420px] rounded-2xl overflow-hidden border border-cyan-500/50 shadow-[0_0_40px_rgba(6,182,212,0.25)] transition-all duration-700 ease-out z-10">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent z-10"></div>
+                <div class="absolute top-4 left-4 bg-red-600/80 border border-red-500 px-3 py-1 rounded text-[10px] font-bold font-['Orbitron'] tracking-widest z-20 text-white shadow-lg">
+                    TELKOM / MOAZET
+                </div>
+                <div class="w-full h-full bg-slate-800 flex items-center justify-center text-center p-6 flex-col gap-4">
+                    <img src="https://drive.google.com/file/d/1QXpnSGQDr56m65ZhLcqz9tXVbtPUSsEN/view?usp=sharing
+                    <!-- <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-20 h-20 text-cyan-400">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M2.25 21h19.5M4.5 21V11.895M4.5 21H12M12 21h4.5m-13.5-9.21h16.5" />
+                    </svg> -->
+                    <!-- <span class="text-xs text-slate-400 font-mono" >to Teknisi & Tower BTS ]</span> -->
+                </div>
+            </div>
+            <div class="absolute -inset-2 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-2xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-700 -z-0"></div>
+        </div>
+
+        <div class="flex flex-col gap-6 text-center md:text-left">
+            <div class="h-1 w-20 bg-gradient-to-r from-cyan-400 to-blue-500 mx-auto md:mx-0 rounded-full"></div>
+            <p class="text-slate-300 font-medium text-lg leading-relaxed md:text-xl border-l-4 border-cyan-500 pl-4 py-2 bg-cyan-950/10 rounded-r-xl">
+                Sebuah sistem yang dirancang untuk memudahkan teknisi fiber optic dalam merencanakan serta kalkulasi biaya instalasi jaringan FTTH.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start mt-4 font-['Orbitron']">
+                <a href="#form-section" class="inline-block text-center px-6 py-3 bg-cyan-500 text-slate-950 rounded-xl font-bold text-sm tracking-wider shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(6,182,212,0.6)]">
+                    SCROLL NOW!
+                </a>
+                <button class="px-6 py-3 border border-purple-500/50 bg-purple-950/20 text-purple-300 rounded-xl font-bold text-xs tracking-wide shadow-[0_0_15px_rgba(168,85,247,0.2)] transition-all duration-300 hover:-translate-y-1 hover:bg-purple-900/30 hover:border-purple-400 hover:shadow-[0_0_25px_rgba(168,85,247,0.4)]">
+                    SELAMAT MENIKMATI LAYANAN KAMI SALAM HORMAT!
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main id="form-section" class="max-w-7xl mx-auto px-4 py-12">
+        
+        <div class="mb-12 p-6 rounded-2xl border border-amber-500/30 bg-slate-900/60 backdrop-blur-md shadow-[0_0_25px_rgba(245,158,11,0.05)] max-w-xl mx-auto transition-all duration-300 hover:border-amber-500/60 focus-within:shadow-[0_0_25px_rgba(245,158,11,0.2)]">
+            <label for="wilayah-select" class="block font-['Orbitron'] text-xs font-bold tracking-widest text-amber-400 mb-3">
+                A. PENGATURAN WILAYAH (MULTIPLIER BIAYA)
+            </label>
+            <select id="wilayah-select" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-slate-200 outline-none transition-all duration-300 focus:border-amber-400 focus:shadow-[0_0_15px_rgba(245,158,11,0.2)] font-medium">
+                <option value="perumahan">Perkomplekan / Perumahan (Standar)</option>
+                <option value="urban">Perkotaan / Urban (Tinggi - Multiplier 1.25x)</option>
+                <option value="rural">Pedesaan / Rural (Ekononomis - Multiplier 0.9x)</option>
+            </select>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <section class="card-neon border-cyan-500/20 bg-slate-900/40 focus-within:border-cyan-400 focus-within:shadow-[0_0_25px_rgba(6,182,212,0.25)]">
+                <h3 class="title-section text-cyan-400 border-cyan-500/30">SECTION 1: DATA TIANG (POLE)</h3>
+                <form id="form-tiang" class="space-y-4">
+                    <div>
+                        <label class="label-input">Nama Tiang</label>
+                        <input type="text" id="tiang-nama" placeholder="INPUT NAMA TIANG" required class="input-field focus:border-cyan-400 focus:shadow-[0_0_10px_rgba(6,182,212,0.2)]">
+                    </div>
+                    <div>
+                        <label class="label-input">Nama Lokasi</label>
+                        <input type="text" id="tiang-lokasi" placeholder="INPUT LOKASI TIANG" required class="input-field focus:border-cyan-400 focus:shadow-[0_0_10px_rgba(6,182,212,0.2)]">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="label-input">Latitude</label>
+                            <input type="number" step="any" id="tiang-lat" placeholder="INPUT LATITUDE" required class="input-field focus:border-cyan-400 focus:shadow-[0_0_10px_rgba(6,182,212,0.2)]">
+                        </div>
+                        <div>
+                            <label class="label-input">Longitude</label>
+                            <input type="number" step="any" id="tiang-lng" placeholder="INPUT LONGITUDE" required class="input-field focus:border-cyan-400 focus:shadow-[0_0_10px_rgba(6,182,212,0.2)]">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="label-input">Material Tiang</label>
+                        <select id="tiang-material" class="input-field focus:border-cyan-400">
+                            <option value="7m">Tiang Besi 7m</option>
+                            <option value="9m">Tiang Besi 9m</option>
+                            <option value="14m">Tiang Besi 14m</option>
+                            <option value="beton">Tiang Beton</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="label-input">Fungsi Status</label>
+                        <select id="tiang-fungsi" class="input-field focus:border-cyan-400">
+                            <option value="beli">Tiang Baru (Beli)</option>
+                            <option value="sewa">Tiang Menumpang Pihak ke-3 (Sewa)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="label-input">Biaya Custom Tambahan (Rp)</label>
+                        <input type="number" id="tiang-biaya-custom" placeholder="0" class="input-field focus:border-cyan-400">
+                    </div>
+                    <button type="submit" class="btn-submit bg-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.3)] hover:shadow-[0_0_20px_rgba(6,182,212,0.5)]">
+                        CETAK HASIL TIANG
+                    </button>
+                </form>
+            </section>
+
+            <section class="card-neon border-purple-500/20 bg-slate-900/40 focus-within:border-purple-400 focus-within:shadow-[0_0_25px_rgba(168,85,247,0.25)]">
+                <h3 class="title-section text-purple-400 border-purple-500/30">SECTION 2: DATA KABEL (FO PATH)</h3>
+                <form id="form-kabel" class="space-y-4">
+                    <div>
+                        <label class="label-input">Nama Kabel</label>
+                        <input type="text" id="kabel-nama" placeholder="INPUT NAMA KABEL" required class="input-field focus:border-purple-400 focus:shadow-[0_0_10px_rgba(168,85,247,0.2)]">
+                    </div>
+                    <div>
+                        <label class="label-input">Fungsi Kabel</label>
+                        <select id="kabel-fungsi" class="input-field focus:border-purple-400">
+                            <option value="feeder">Feeder Cable</option>
+                            <option value="distribution">Distribution Cable</option>
+                            <option value="drop">Drop Core Customer</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="label-input flex justify-between items-center">
+                            <span>Rute Koordinat (Multi)</span>
+                            <button type="button" id="btn-add-koordinat" class="text-[10px] bg-purple-950 border border-purple-500 px-2 py-0.5 rounded text-purple-300 hover:bg-purple-900">
+                                + Baris
+                            </button>
+                        </label>
+                        <div id="wrapper-kabel-koordinat" class="space-y-2 max-h-28 overflow-y-auto pr-1">
+                            <div class="grid grid-cols-2 gap-1 node-koordinat">
+                                <input type="number" step="any" placeholder="Lat" required class="input-field text-xs py-1.5 focus:border-purple-400">
+                                <input type="number" step="any" placeholder="Lng" required class="input-field text-xs py-1.5 focus:border-purple-400">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="label-input">Panjang Rute (m)</label>
+                            <input type="number" id="kabel-panjang" placeholder="0" required class="input-field focus:border-purple-400">
+                        </div>
+                        <div>
+                            <label class="label-input">Slack/Loop (%)</label>
+                            <input type="number" id="kabel-slack" placeholder="10" value="10" required class="input-field focus:border-purple-400">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="label-input">Biaya/Meter (Rp)</label>
+                            <input type="number" id="kabel-biaya-mat" placeholder="15000" value="15000" required class="input-field focus:border-purple-400">
+                        </div>
+                        <div>
+                            <label class="label-input">Jasa Tarik/m (Rp)</label>
+                            <input type="number" id="kabel-biaya-jasa" placeholder="8000" value="8000" required class="input-field focus:border-purple-400">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit bg-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.3)] hover:shadow-[0_0_20px_rgba(168,85,247,0.5)]">
+                        CETAK HASIL KABEL
+                    </button>
+                </form>
+            </section>
+
+            <section class="card-neon border-pink-500/20 bg-slate-900/40 focus-within:border-pink-400 focus-within:shadow-[0_0_25px_rgba(236,72,153,0.25)]">
+                <h3 class="title-section text-pink-400 border-pink-500/30">SECTION 3: DATA ODP</h3>
+                <form id="form-odp" class="space-y-4">
+                    <div>
+                        <label class="label-input">Nama ODP</label>
+                        <input type="text" id="odp-nama" placeholder="INPUT NAMA ODP" required class="input-field focus:border-pink-400 focus:shadow-[0_0_10px_rgba(236,72,153,0.2)]">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="label-input">Latitude</label>
+                            <input type="number" step="any" id="odp-lat" placeholder="INPUT LATITUDE" required class="input-field focus:border-pink-400">
+                        </div>
+                        <div>
+                            <label class="label-input">Longitude</label>
+                            <input type="number" step="any" id="odp-lng" placeholder="INPUT LONGITUDE" required class="input-field focus:border-pink-400">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="label-input">Splitter Ratio</label>
+                        <select id="odp-splitter" class="input-field focus:border-pink-400">
+                            <option value="1:4">Splitter 1:4</option>
+                            <option value="1:8">Splitter 1:8</option>
+                            <option value="1:16">Splitter 1:16</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="label-input">Biaya Perangkat & Box (Rp)</label>
+                        <input type="number" id="odp-biaya" placeholder="1200000" value="1200000" required class="input-field focus:border-pink-400">
+                    </div>
+                    <button type="submit" class="btn-submit bg-pink-500 shadow-[0_0_15px_rgba(236,72,153,0.3)] hover:shadow-[0_0_20px_rgba(236,72,153,0.5)]">
+                        CETAK HASIL ODP
+                    </button>
+                </form>
+            </section>
+
+            <section class="card-neon border-emerald-500/20 bg-slate-900/40 focus-within:border-emerald-400 focus-within:shadow-[0_0_25px_rgba(16,185,129,0.25)]">
+                <h3 class="title-section text-emerald-400 border-emerald-500/30">SECTION 4: DATA ODC</h3>
+                <form id="form-odc" class="space-y-4">
+                    <div>
+                        <label class="label-input">Nama ODC</label>
+                        <input type="text" id="odc-nama" placeholder="INPUT NAMA ODC" required class="input-field focus:border-emerald-400 focus:shadow-[0_0_10px_rgba(16,185,129,0.2)]">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="label-input">Latitude</label>
+                            <input type="number" step="any" id="odc-lat" placeholder="INPUT LATITUDE" required class="input-field focus:border-emerald-400">
+                        </div>
+                        <div>
+                            <label class="label-input">Longitude</label>
+                            <input type="number" step="any" id="odc-lng" placeholder="INPUT LONGITUDE" required class="input-field focus:border-emerald-400">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="label-input">Kapasitas Core</label>
+                        <select id="odc-kapasitas" class="input-field focus:border-emerald-400">
+                            <option value="96">Maksimal 96 Core</option>
+                            <option value="144">Maksimal 144 Core</option>
+                            <option value="288">Maksimal 288 Core</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="label-input">Biaya Perangkat & Fondasi (Rp)</label>
+                        <input type="number" id="odc-biaya" placeholder="18500000" value="18500000" required class="input-field focus:border-emerald-400">
+                    </div>
+                    <button type="submit" class="btn-submit bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_20px_rgba(16,185,129,0.5)]">
+                        CETAK HASIL ODC
+                    </button>
+                </form>
+            </section>
+
+            <section class="card-neon border-amber-500/20 bg-slate-900/40 focus-within:border-amber-400 focus-within:shadow-[0_0_25px_rgba(245,158,11,0.25)]">
+                <h3 class="title-section text-amber-400 border-amber-500/30">SECTION 5: DATA RUMAH</h3>
+                <form id="form-rumah" class="space-y-4">
+                    <div>
+                        <label class="label-input">Pemilik / ID Pelanggan</label>
+                        <input type="text" id="rumah-nama" placeholder="INPUT PEMILIK RUMAH / ID PELANGGAN" required class="input-field focus:border-amber-400 focus:shadow-[0_0_10px_rgba(245,158,11,0.2)]">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="label-input">Latitude</label>
+                            <input type="number" step="any" id="rumah-lat" placeholder="INPUT LATITUDE" required class="input-field focus:border-amber-400">
+                        </div>
+                        <div>
+                            <label class="label-input">Longitude</label>
+                            <input type="number" step="any" id="rumah-lng" placeholder="INPUT LONGITUDE" required class="input-field focus:border-amber-400">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="label-input">Panjang Pre-con Drop Cable</label>
+                        <select id="rumah-dropcable" class="input-field focus:border-amber-400">
+                            <option value="50">50 Meter</option>
+                            <option value="75">75 Meter</option>
+                            <option value="100">100 Meter</option>
+                            <option value="150">150 Meter</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="label-input">Biaya ONT & Aktivasi (Rp)</label>
+                        <input type="number" id="rumah-biaya" placeholder="650000" value="650000" required class="input-field focus:border-amber-400">
+                    </div>
+                    <button type="submit" class="btn-submit bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.3)] hover:shadow-[0_0_20px_rgba(245,158,11,0.5)]">
+                        CETAK HASIL RUMAH
+                    </button>
+                </form>
+            </section>
+
+        </div>
+
+        <div class="mt-16 p-6 rounded-2xl border border-cyan-500/30 bg-slate-900/40 backdrop-blur-md">
+            <h3 class="font-['Orbitron'] text-sm font-bold tracking-widest text-cyan-400 mb-2">
+                FITUR SIMULASI INSTALASI FIBER OPTIK (REAL WORLD MAP GLOBAL)
+            </h3>
+            <p class="text-xs text-slate-400 mb-4">
+                Pilih komponen di bawah, lalu lakukan klik pada area peta untuk menempatkan node atau menarik rute kabel secara dinamis secara real-time. Marker/tiang dapat digeser (*draggable*).
+            </p>
+            
+            <div class="flex flex-wrap gap-3 mb-4 font-['Orbitron'] text-xs">
+                <button id="tool-tiang" class="px-4 py-2 bg-cyan-950 border border-cyan-400 text-cyan-300 rounded-lg font-bold shadow-[0_0_10px_rgba(6,182,212,0.2)] active-tool">
+                    🛠️ MODE: TIANG
+                </button>
+                <button id="tool-kabel" class="px-4 py-2 bg-slate-950 border border-purple-500/40 text-purple-400 rounded-lg font-bold">
+                    🛣️ MODE: KABEL (KLIK SEKUENSAL)
+                </button>
+                <button id="tool-odp" class="px-4 py-2 bg-slate-950 border border-pink-500/40 text-pink-400 rounded-lg font-bold">
+                    📦 MODE: ODP
+                </button>
+                <button id="tool-odc" class="px-4 py-2 bg-slate-950 border border-emerald-500/40 text-emerald-400 rounded-lg font-bold">
+                    🗄️ MODE: ODC
+                </button>
+                <button id="tool-rumah" class="px-4 py-2 bg-slate-950 border border-amber-500/40 text-amber-400 rounded-lg font-bold">
+                    🏠 MODE: RUMAH
+                </button>
+                <button id="clear-map-btn" class="ml-auto px-4 py-2 bg-red-950/60 border border-red-500 text-red-400 rounded-lg font-bold hover:bg-red-900/50">
+                    RESET MAP
+                </button>
+            </div>
+
+            <div id="map" class="w-full h-[500px] rounded-xl border border-slate-700 bg-slate-950 shadow-[inner_0_0_20px_rgba(0,0,0,0.8)]"></div>
+        </div>
+
+        <div id="laporan-pdf-container" class="mt-16 space-y-12 bg-slate-950 p-2">
+            <div class="border-b border-slate-800 pb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="font-['Orbitron'] text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-400 to-amber-400 tracking-wider">
+                        REKAPITULASI BILL OF QUANTITY & RAB FTTH
+                    </h2>
+                    <p class="text-xs text-slate-400">Sistem Kalkulasi Elektronika Major 2026 - Wilayah Aktif: <span id="text-wilayah-aktif" class="text-amber-400 font-bold uppercase">Perumahan</span></p>
+                </div>
+                <button id="btn-unduh-pdf" class="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 font-['Orbitron'] font-bold text-sm tracking-widest rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)] transition-all duration-300 transform hover:-translate-y-0.5">
+                    🖨️ CETAK PERENCANAAN (PRINT RAB PDF)
+                </button>
+            </div>
+
+            <div class="table-container border-cyan-500/20">
+                <div class="flex justify-between items-center p-4 bg-slate-900/80 border-b border-cyan-500/30">
+                    <h4 class="font-['Orbitron'] text-xs font-bold tracking-widest text-cyan-400">TABEL RINGKASAN DATA TIANG (POLE)</h4>
+                    <button onclick="clearList('tiang')" class="btn-delete-list">DELETE LIST TIANG</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-300" id="table-tiang-el">
+                        <thead class="bg-slate-950 text-cyan-300 font-['Orbitron'] uppercase tracking-wider border-b border-slate-800">
+                            <tr>
+                                <th class="p-3">No</th>
+                                <th class="p-3">Nama Tiang</th>
+                                <th class="p-3">Lokasi</th>
+                                <th class="p-3">Koordinat</th>
+                                <th class="p-3">Material</th>
+                                <th class="p-3">Status</th>
+                                <th class="p-3 text-right">Subtotal Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-900">
+                            <tr class="placeholder-row"><td colspan="7" class="p-4 text-center text-slate-500 italic">Belum ada data diinput. Klik "Cetak Hasil Tiang" di atas.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="table-container border-purple-500/20">
+                <div class="flex justify-between items-center p-4 bg-slate-900/80 border-b border-purple-500/30">
+                    <h4 class="font-['Orbitron'] text-xs font-bold tracking-widest text-purple-400">TABEL RINGKASAN DATA KABEL (FO PATH)</h4>
+                    <button onclick="clearList('kabel')" class="btn-delete-list">DELETE LIST KABEL</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-300" id="table-kabel-el">
+                        <thead class="bg-slate-950 text-purple-300 font-['Orbitron'] uppercase tracking-wider border-b border-slate-800">
+                            <tr>
+                                <th class="p-3">No</th>
+                                <th class="p-3">Nama Kabel</th>
+                                <th class="p-3">Fungsi</th>
+                                <th class="p-3">Panjang (+Slack)</th>
+                                <th class="p-3">Biaya Satuan</th>
+                                <th class="p-3 text-right">Subtotal Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-900">
+                            <tr class="placeholder-row"><td colspan="6" class="p-4 text-center text-slate-500 italic">Belum ada data diinput.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="table-container border-pink-500/20">
+                <div class="flex justify-between items-center p-4 bg-slate-900/80 border-b border-pink-500/30">
+                    <h4 class="font-['Orbitron'] text-xs font-bold tracking-widest text-pink-400">TABEL RINGKASAN DATA ODP</h4>
+                    <button onclick="clearList('odp')" class="btn-delete-list">DELETE LIST ODP</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-300" id="table-odp-el">
+                        <thead class="bg-slate-950 text-pink-300 font-['Orbitron'] uppercase tracking-wider border-b border-slate-800">
+                            <tr>
+                                <th class="p-3">No</th>
+                                <th class="p-3">Nama ODP</th>
+                                <th class="p-3">Koordinat</th>
+                                <th class="p-3">Splitter</th>
+                                <th class="p-3 text-right">Subtotal Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-900">
+                            <tr class="placeholder-row"><td colspan="5" class="p-4 text-center text-slate-500 italic">Belum ada data diinput.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="table-container border-emerald-500/20">
+                <div class="flex justify-between items-center p-4 bg-slate-900/80 border-b border-emerald-500/30">
+                    <h4 class="font-['Orbitron'] text-xs font-bold tracking-widest text-emerald-400">TABEL RINGKASAN DATA ODC</h4>
+                    <button onclick="clearList('odc')" class="btn-delete-list">DELETE LIST ODC</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-300" id="table-odc-el">
+                        <thead class="bg-slate-950 text-emerald-300 font-['Orbitron'] uppercase tracking-wider border-b border-slate-800">
+                            <tr>
+                                <th class="p-3">No</th>
+                                <th class="p-3">Nama ODC</th>
+                                <th class="p-3">Koordinat</th>
+                                <th class="p-3">Kapasitas</th>
+                                <th class="p-3 text-right">Subtotal Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-900">
+                            <tr class="placeholder-row"><td colspan="5" class="p-4 text-center text-slate-500 italic">Belum ada data diinput.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="table-container border-amber-500/20">
+                <div class="flex justify-between items-center p-4 bg-slate-900/80 border-b border-amber-500/30">
+                    <h4 class="font-['Orbitron'] text-xs font-bold tracking-widest text-amber-400">TABEL RINGKASAN DATA RUMAH (CUSTOMER TERMINAL)</h4>
+                    <button onclick="clearList('rumah')" class="btn-delete-list">DELETE LIST RUMAH</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-300" id="table-rumah-el">
+                        <thead class="bg-slate-950 text-amber-300 font-['Orbitron'] uppercase tracking-wider border-b border-slate-800">
+                            <tr>
+                                <th class="p-3">No</th>
+                                <th class="p-3">ID Pelanggan / Pemilik</th>
+                                <th class="p-3">Koordinat</th>
+                                <th class="p-3">Panjang Drop Core</th>
+                                <th class="p-3 text-right">Subtotal Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-900">
+                            <tr class="placeholder-row"><td colspan="5" class="p-4 text-center text-slate-500 italic">Belum ada data diinput.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="p-6 rounded-2xl border-2 border-dashed border-cyan-400 bg-slate-900/90 flex flex-col sm:flex-row justify-between items-center gap-4 shadow-[0_0_30px_rgba(6,182,212,0.1)]">
+                <div>
+                    <h3 class="font-['Orbitron'] text-sm font-bold tracking-widest text-cyan-400">TOTAL ESTIMASI INVESTASI PROYEK (CAPEX)</h3>
+                    <p class="text-xs text-slate-400">Akumulasi keseluruhan komponen material, perangkat aktif, pasif, jasa penarikan, serta koefisien wilayah.</p>
+                </div>
+                <div class="font-['Orbitron'] text-2xl md:text-3xl font-black text-cyan-300 drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]" id="global-total-cost">
+                    Rp 0
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="w-full border-t border-slate-800 py-6 text-center text-slate-500 text-xs font-mono mt-20 bg-slate-950">
+        <p>©2026 create by 
+            <a href="#" class="text-slate-400 transition-colors duration-300 hover:text-cyan-300 hover:drop-shadow-[0_0_8px_rgba(103,232,249,0.6)] font-bold">
+                elektronika major
+            </a>
+        </p>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
